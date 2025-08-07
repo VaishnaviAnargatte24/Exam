@@ -219,8 +219,9 @@ const styles = StyleSheet.create({
   },
   // Style for the clickable link text.
   link: {
-    color: '#e0e0e0', // Darker white
+    color: '#007BFF', 
     textDecorationLine: 'underline',
+    fontWeight: '500',
   },
   // Container for the footer section.
   footerContainer: {
