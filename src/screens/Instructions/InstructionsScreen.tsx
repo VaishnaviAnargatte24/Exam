@@ -7,20 +7,21 @@ import {
   TouchableOpacity,
   SafeAreaView,
   useWindowDimensions,
-  Image,
   Alert,
 } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { Picker } from '@react-native-picker/picker';
+import BellIcon from '../assets/bell.svg';
+import ProfileIcon from '../../assets/icons/candidate.png';
 
 type RootStackParamList = {
   Instructions: undefined;
   Questions: undefined;
 };
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Instructions'>;
+type InstructionsScreenProps = NativeStackScreenProps<RootStackParamList, 'Instructions'>;
 
-const InstructionsScreen: React.FC<Props> = ({ navigation }) => {
+const InstructionsScreen: React.FC<InstructionsScreenProps> = ({ navigation }) => {
   const [agreed, setAgreed] = useState(false);
   const [selectedLanguage, setSelectedLanguage] = useState('English');
   const { width } = useWindowDimensions();
@@ -37,14 +38,14 @@ const InstructionsScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* Top bar with bell and profile */}
+      {/* Top bar */}
       <View style={styles.topBar}>
         <View style={{ flex: 1 }} />
         <View style={styles.bellContainer}>
           <View style={styles.notificationDot}><Text style={styles.notifCount}>2</Text></View>
-          <Image source={require('./assets/bell.png')} style={styles.bellIcon} />
+          <BellIcon width={24} height={24} />
         </View>
-        <Image source={require('../../assets/image/candidate.png')} style={styles.profilePic} />
+        <ProfileIcon width={36} height={36} style={styles.profileIcon} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -56,7 +57,7 @@ const InstructionsScreen: React.FC<Props> = ({ navigation }) => {
               <Picker
                 selectedValue={selectedLanguage}
                 style={styles.picker}
-                onValueChange={(value) => setSelectedLanguage(value)}
+                onValueChange={(itemValue) => setSelectedLanguage(itemValue)}
               >
                 <Picker.Item label="English" value="English" />
                 <Picker.Item label="Hindi" value="Hindi" />
@@ -93,14 +94,10 @@ const InstructionsScreen: React.FC<Props> = ({ navigation }) => {
           </Text>
 
           <Text style={styles.sectionTitle}>Navigating to a Question:</Text>
-          <Text style={styles.instructionText}>
-            7. To answer a question, do the following:
-          </Text>
-          <Text style={styles.instructionText}>
-            a. Click on the question number in the Question Palette. Note that using this option does NOT save your answer.
-          </Text>
-          <Text style={styles.instructionText}>b. Click on Save & Next to save your answer and move to next question.</Text>
-          <Text style={styles.instructionText}>c. Click on Mark for Review & Next to save your answer and mark it for review.</Text>
+          <Text style={styles.instructionText}>7. To answer a question, do the following:</Text>
+          <Text style={styles.instructionText}>a. Click on the question number in the Question Palette...</Text>
+          <Text style={styles.instructionText}>b. Click on Save & Next to save your answer...</Text>
+          <Text style={styles.instructionText}>c. Click on Mark for Review & Next to mark and go to next question.</Text>
 
           <Text style={styles.sectionTitle}>Answering a Question:</Text>
           <Text style={styles.instructionText}>8. a. To select your answer, click one of the options.</Text>
@@ -113,21 +110,13 @@ const InstructionsScreen: React.FC<Props> = ({ navigation }) => {
           </Text>
 
           <Text style={styles.sectionTitle}>Navigating to a Question:</Text>
-          <Text style={styles.instructionText}>
-            10. Sections are displayed on the top bar. Click the section name to view.
-          </Text>
-          <Text style={styles.instructionText}>
-            11. After Save & Next on last question of a section, you'll move to the next section automatically.
-          </Text>
-          <Text style={styles.instructionText}>
-            12. You can shuffle between sections/questions any time during exam.
-          </Text>
-          <Text style={styles.instructionText}>
-            13. Candidate can view question summary above the palette.
-          </Text>
+          <Text style={styles.instructionText}>10. Sections are displayed on the top bar.</Text>
+          <Text style={styles.instructionText}>11. After Save & Next, last question goes to next section automatically.</Text>
+          <Text style={styles.instructionText}>12. You can shuffle between sections/questions.</Text>
+          <Text style={styles.instructionText}>13. Question summary appears above the palette.</Text>
 
           <Text style={{ color: 'red', fontSize: 12, marginTop: 10 }}>
-            Please note all questions will appear in your default language. This language can be changed for a particular question later on.
+            Please note all questions will appear in your default language...
           </Text>
 
           <View style={styles.checkboxContainer}>
@@ -138,7 +127,7 @@ const InstructionsScreen: React.FC<Props> = ({ navigation }) => {
               {agreed && <Text style={styles.checkmark}>✓</Text>}
             </TouchableOpacity>
             <Text style={styles.declarationText}>
-              I have read and understood the instructions. All computer hardware allotted to me are in proper working condition. I declare that I am not in possession of / not wearing / not carrying any prohibited gadget like mobile phone, bluetooth devices etc. / any prohibited material with me into the Examination Hall. I agree that in case of not adhering to the instructions, I shall be liable to be debarred from this Test and/or to disciplinary action, which may include ban from future Tests / Examinations.
+              I have read and understood the instructions. I am not in possession of prohibited gadgets...
             </Text>
           </View>
 
@@ -168,15 +157,17 @@ const styles = StyleSheet.create({
   notificationDot: {
     backgroundColor: 'red',
     position: 'absolute',
-    right: 0,
-    top: -5,
+    right: -6,
+    top: -6,
     borderRadius: 8,
     paddingHorizontal: 4,
     zIndex: 1,
   },
   notifCount: { color: '#fff', fontSize: 10 },
-  bellIcon: { width: 24, height: 24, tintColor: 'black' },
-  profilePic: { width: 36, height: 36, borderRadius: 18 },
+  profileIcon: {
+    borderRadius: 18,
+    overflow: 'hidden',
+  },
   card: {
     backgroundColor: '#fff',
     borderRadius: 8,
