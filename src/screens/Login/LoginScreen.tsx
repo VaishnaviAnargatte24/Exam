@@ -80,7 +80,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
               placeholder="Enter username"
               placeholderTextColor="#000"
               value={username}
-              onChangeText={setUsername}
+              onChangeText={setUsername} 
             />
 
             <Text style={styles.inputLabel}>Password</Text>
