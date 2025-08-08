@@ -1,6 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, Alert } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  FlatList,
+  Alert,
+} from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../navigation/AppNavigator'; // Import navigation types
 
+// Define props type for navigation
+type QuestionsScreenProps = {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'Questions'>;
+};
+
+// Hardcoded list of questions with options and correct answers
 const questions = [
   {
     id: 1,
@@ -22,24 +37,33 @@ const questions = [
   },
 ];
 
-const QuestionsScreen = ({ navigation }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedOptions, setSelectedOptions] = useState({});
-  const [markedReview, setMarkedReview] = useState({});
+// Main functional component for Questions screen
+const QuestionsScreen: React.FC<QuestionsScreenProps> = ({ navigation }) => {
+  const [currentIndex, setCurrentIndex] = useState(0); // Track current question index
+  const [selectedOptions, setSelectedOptions] = useState<Record<number, string>>({}); // Store selected answers
+  const [markedReview, setMarkedReview] = useState<Record<number, boolean>>({}); // Track questions marked for review
 
-  const currentQuestion = questions[currentIndex];
+  const currentQuestion = questions[currentIndex]; // Get current question data
 
-  const handleOptionSelect = (option) => {
+  // Handle option selection
+  const handleOptionSelect = (option: string) => {
     setSelectedOptions({
       ...selectedOptions,
       [currentQuestion.id]: option,
     });
   };
 
+  // Handle "Next" or "Submit" button press
   const handleNext = () => {
+    if (!selectedOptions[currentQuestion.id]) {
+      Alert.alert('Please select an option before proceeding.'); // Show alert if no option selected
+      return;
+    }
+
     if (currentIndex < questions.length - 1) {
-      setCurrentIndex(currentIndex + 1);
+      setCurrentIndex(currentIndex + 1); // Go to next question
     } else {
+      // Navigate to summary screen with selected answers and review data
       navigation.navigate('Summary', {
         selectedOptions,
         markedReview,
@@ -47,25 +71,29 @@ const QuestionsScreen = ({ navigation }) => {
     }
   };
 
+  // Handle "Mark for Review" button press
   const handleMarkForReview = () => {
     setMarkedReview({
       ...markedReview,
       [currentQuestion.id]: true,
     });
-    handleNext();
+
+    handleNext(); // Move to next question
   };
 
-  const isOptionSelected = (option) =>
+  // Check if option is selected
+  const isOptionSelected = (option: string) =>
     selectedOptions[currentQuestion.id] === option;
 
+  // Check if current question is marked for review
   const isMarkedForReview = markedReview[currentQuestion.id];
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Question {currentIndex + 1} / {questions.length}</Text>
-
       <Text style={styles.question}>{currentQuestion.question}</Text>
 
+      {/* Render list of options */}
       <FlatList
         data={currentQuestion.options}
         keyExtractor={(item) => item}
@@ -82,6 +110,7 @@ const QuestionsScreen = ({ navigation }) => {
         )}
       />
 
+      {/* Footer with buttons */}
       <View style={styles.footer}>
         <TouchableOpacity style={styles.reviewButton} onPress={handleMarkForReview}>
           <Text style={styles.buttonText}>
@@ -101,6 +130,7 @@ const QuestionsScreen = ({ navigation }) => {
 
 export default QuestionsScreen;
 
+// Styles for the screen
 const styles = StyleSheet.create({
   container: {
     flex: 1,

@@ -2,32 +2,14 @@ import React from 'react';
 import {
   View,
   Text,
-  FlatList,
-  TouchableOpacity,
   StyleSheet,
+  TouchableOpacity,
+  Image,
 } from 'react-native';
+
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
-
-// 👇 Define the type for the selected options
-type SelectedOptions = {
-  [questionId: string]: string;
-};
-
-type MarkedReview = {
-  [questionId: string]: boolean;
-};
-
-// 👇 Define navigation + route props
-type RootStackParamList = {
-  Summary: {
-    selectedOptions: SelectedOptions;
-    markedReview: MarkedReview;
-  };
-  Result: {
-    selectedOptions: SelectedOptions;
-  };
-};
+import { RootStackParamList } from '../../navigation/AppNavigator';
 
 type SummaryScreenRouteProp = RouteProp<RootStackParamList, 'Summary'>;
 type SummaryScreenNavigationProp = StackNavigationProp<
@@ -43,12 +25,16 @@ type Props = {
 const SummaryScreen: React.FC<Props> = ({ route, navigation }) => {
   const { selectedOptions, markedReview } = route.params;
 
-  const data = Object.keys(selectedOptions).map((questionId, index) => ({
-    id: questionId,
-    questionNumber: index + 1,
-    answer: selectedOptions[questionId],
-    review: markedReview[questionId] || false,
-  }));
+  const totalQuestions = 45;
+  const answered = Object.values(selectedOptions).filter(Boolean).length;
+  const markedForReview = Object.values(markedReview).filter(Boolean).length;
+  const answeredAndMarked = Object.keys(selectedOptions).filter(
+    (key) => selectedOptions[key] && markedReview[key]
+  ).length;
+  const notAnswered = Object.keys(selectedOptions).filter(
+    (key) => !selectedOptions[key]
+  ).length;
+  const notVisited = totalQuestions - Object.keys(selectedOptions).length;
 
   const handleSubmit = () => {
     navigation.navigate('Result', {
@@ -58,32 +44,49 @@ const SummaryScreen: React.FC<Props> = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>📝 Summary</Text>
+      {/* Profile Top Right */}
+      <View style={styles.topRightSection}>
+        <Image
+          source={require('../../assets/image/candidate.jpg')}
+          style={styles.profileImage}
+        />
+      </View>
 
-      <FlatList
-        data={data}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.questionNum}>Question {item.questionNumber}</Text>
-            <Text style={styles.answer}>
-              Answer: {item.answer || 'Not Answered'}
-            </Text>
-            {item.review && (
-              <Text style={styles.review}>Marked for Review</Text>
-            )}
-          </View>
-        )}
-      />
+      {/* Header */}
+      <View style={styles.headerBox}>
+        <Text style={styles.headerText}>Candidate Name - Shruti Rajput</Text>
+        <Text style={styles.headerText}>Exam Name - NEET</Text>
+        <Text style={styles.headerText}>Subject Name - Physics</Text>
+        <Text style={styles.timer}>Remaining Time - 02:55:23</Text>
+      </View>
 
-      <View style={styles.footer}>
-        <TouchableOpacity
-          style={styles.goBackBtn}
-          onPress={() => navigation.goBack()}>
-          <Text style={styles.footerText}>⬅ Go Back</Text>
+      {/* Summary */}
+      <View style={styles.summaryBox}>
+        <Text style={styles.summaryTitle}>Exam Summary</Text>
+
+        <View style={styles.row}>
+          <View style={styles.cell}><Text>No. of Questions{"\n"}{totalQuestions}</Text></View>
+          <View style={styles.cell}><Text>Answered{"\n"}{answered}</Text></View>
+          <View style={styles.cell}><Text>Not Answered{"\n"}{notAnswered}</Text></View>
+          <View style={styles.cell}><Text>Marked for Review{"\n"}{markedForReview}</Text></View>
+          <View style={styles.cell}><Text>Answered & Marked for Review{"\n"}{answeredAndMarked}</Text></View>
+          <View style={styles.cell}><Text>Not Visited{"\n"}{notVisited}</Text></View>
+        </View>
+      </View>
+
+      {/* Confirm Text */}
+      <Text style={styles.confirmText}>
+        Are you sure you want to submit for final marking?{"\n"}
+        No changes will be allowed after submission.
+      </Text>
+
+      {/* Buttons */}
+      <View style={styles.actionButtons}>
+        <TouchableOpacity style={styles.yesButton} onPress={handleSubmit}>
+          <Text style={styles.buttonText}>YES</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
-          <Text style={styles.footerText}>✅ Submit Test</Text>
+        <TouchableOpacity style={styles.noButton} onPress={() => navigation.goBack()}>
+          <Text style={styles.buttonText}>NO</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -95,54 +98,88 @@ export default SummaryScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
     backgroundColor: '#fefefe',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    marginBottom: 16,
-    textAlign: 'center',
-  },
-  card: {
-    backgroundColor: '#f1f1f1',
     padding: 16,
-    borderRadius: 8,
-    marginBottom: 12,
   },
-  questionNum: {
-    fontWeight: '600',
+  topRightSection: {
+    position: 'absolute',
+    top: 16,
+    right: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  profileImage: {
+    width: 35,
+    height: 35,
+    borderRadius: 50,
+  },
+
+  headerBox: {
+    backgroundColor: '#fff',
+    padding: 12,
+    borderRadius: 10,
+    marginBottom: 40,
+    elevation: 2,
+  },
+  headerText: {
+    fontSize: 14,
     marginBottom: 4,
   },
-  answer: {
-    fontSize: 15,
-    color: '#333',
+  timer: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#4a4a4a',
   },
-  review: {
-    marginTop: 4,
-    fontSize: 13,
-    color: '#ff9900',
-    fontStyle: 'italic',
+  summaryBox: {
+    backgroundColor: '#e0ffd8',
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 25,
   },
-  footer: {
+  summaryTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 20,
+    flexWrap: 'wrap',
   },
-  goBackBtn: {
-    backgroundColor: '#6c757d',
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    borderRadius: 6,
+  cell: {
+    width: '30%',
+    marginVertical: 8,
+    textAlign: 'center',
+    alignItems: 'center',
   },
-  submitBtn: {
+  confirmText: {
+    textAlign: 'center',
+    fontSize: 14,
+    marginVertical: 16,
+    color: '#333',
+  },
+  actionButtons: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 20,
+  },
+  yesButton: {
     backgroundColor: '#28a745',
     paddingVertical: 12,
-    paddingHorizontal: 18,
+    paddingHorizontal: 24,
     borderRadius: 6,
   },
-  footerText: {
+  noButton: {
+    backgroundColor: '#dc3545',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 6,
+  },
+  buttonText: {
     color: '#fff',
-    fontWeight: '600',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });

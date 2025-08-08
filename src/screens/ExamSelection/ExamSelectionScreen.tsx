@@ -63,7 +63,6 @@ const ExamSelectionScreen: React.FC<Props> = ({ navigation }) => {
     }
 
     // Navigate to the 'Login' screen upon successful selection.
-    // This assumes the navigation stack is correctly set up.
     navigation.navigate('Login');
   };
 
