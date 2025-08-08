@@ -7,6 +7,7 @@ import {
   Image,
 } from 'react-native';
 
+import DropDownPicker from 'react-native-dropdown-picker';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation/AppNavigator';
@@ -26,17 +27,37 @@ const SummaryScreen: React.FC<Props> = ({ route, navigation }) => {
   const { selectedOptions, markedReview } = route.params;
 
   const [submitted, setSubmitted] = useState(false);
+  
+  // State for react-native-dropdown-picker
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState('English');
+  const [items, setItems] = useState([
+    {label: 'English', value: 'English'},
+    {label: 'Hindi', value: 'Hindi'},
+    {label: 'Marathi', value: 'Marathi'},
+    {label: 'Tamil', value: 'Tamil'}
+  ]);
 
   const totalQuestions = 45;
+  // Calculate the counts based on the state data
   const answered = Object.values(selectedOptions).filter(Boolean).length;
+  const notAnswered = Object.keys(selectedOptions).filter(
+    (key) => !selectedOptions[key]
+  ).length;
   const markedForReview = Object.values(markedReview).filter(Boolean).length;
   const answeredAndMarked = Object.keys(selectedOptions).filter(
     (key) => selectedOptions[key] && markedReview[key]
   ).length;
-  const notAnswered = Object.keys(selectedOptions).filter(
-    (key) => !selectedOptions[key]
-  ).length;
-  const notVisited = totalQuestions - Object.keys(selectedOptions).length;
+  const notVisited = totalQuestions - (answered + notAnswered);
+
+  const summaryItems = [
+    { label: 'No. of Questions', value: totalQuestions },
+    { label: 'Answered', value: answered },
+    { label: 'Not Answered', value: notAnswered },
+    { label: 'Marked for Review', value: markedForReview },
+    { label: 'Answered & Marked for Review', value: answeredAndMarked },
+    { label: 'Not Visited', value: notVisited },
+  ];
 
   const handleSubmit = () => {
     setSubmitted(true);
@@ -44,20 +65,41 @@ const SummaryScreen: React.FC<Props> = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* Profile Top Right */}
+      {/* Top Header Section for Profile */}
       <View style={styles.topRightSection}>
         <Image
+          // Reverting to the local 'require' call as requested.
+          // Note: this may not render correctly in a web preview.
           source={require('../../assets/image/candidate.jpg')}
           style={styles.profileImage}
         />
       </View>
 
-      {/* Header */}
+      {/* Main Header Section for Exam Details and Language */}
       <View style={styles.headerBox}>
-        <Text style={styles.headerText}>Candidate Name - Shruti Rajput</Text>
-        <Text style={styles.headerText}>Exam Name - NEET</Text>
-        <Text style={styles.headerText}>Subject Name - Physics</Text>
-        <Text style={styles.timer}>Remaining Time - 02:55:23</Text>
+        <View style={styles.headerInfo}>
+          <Text style={styles.headerText}>Candidate Name - Shruti Rajput</Text>
+          <Text style={styles.headerText}>Exam Name - NEET</Text>
+          <Text style={styles.headerText}>Subject Name - Physics</Text>
+          <Text style={styles.timer}>Remaining Time - 02:55:23</Text>
+        </View>
+        <DropDownPicker
+            open={open}
+            value={value}
+            items={items}
+            setOpen={setOpen}
+            setValue={setValue}
+            setItems={setItems}
+            style={styles.languageDropdown}
+            containerStyle={styles.languageContainerStyle}
+            dropDownContainerStyle={styles.dropdownMenu}
+            labelStyle={styles.languageText}
+            textStyle={styles.languageText}
+            selectedItemLabelStyle={styles.selectedLanguageText}
+            placeholder={value}
+            zIndex={1000}
+            listMode="SCROLLVIEW"
+        />
       </View>
 
       {/* Conditional Rendering */}
@@ -66,14 +108,20 @@ const SummaryScreen: React.FC<Props> = ({ route, navigation }) => {
           {/* Summary */}
           <View style={styles.summaryBox}>
             <Text style={styles.summaryTitle}>Exam Summary</Text>
-
-            <View style={styles.row}>
-              <View style={styles.cell}><Text>No. of Questions{"\n"}{totalQuestions}</Text></View>
-              <View style={styles.cell}><Text>Answered{"\n"}{answered}</Text></View>
-              <View style={styles.cell}><Text>Not Answered{"\n"}{notAnswered}</Text></View>
-              <View style={styles.cell}><Text>Marked for Review{"\n"}{markedForReview}</Text></View>
-              <View style={styles.cell}><Text>Answered & Marked for Review{"\n"}{answeredAndMarked}</Text></View>
-              <View style={styles.cell}><Text>Not Visited{"\n"}{notVisited}</Text></View>
+            <View style={styles.summaryGrid}>
+                {summaryItems.map((item, index) => (
+                    <View 
+                        key={index} 
+                        style={[
+                            styles.summaryGridItem,
+                            index % 3 !== 2 && styles.summaryGridItemRightBorder,
+                            index < 3 && styles.summaryGridItemBottomBorder,
+                        ]}
+                    >
+                        <Text style={styles.summaryCellHeader}>{item.label}</Text>
+                        <Text style={styles.summaryCellValue}>{item.value}</Text>
+                    </View>
+                ))}
             </View>
           </View>
 
@@ -96,7 +144,9 @@ const SummaryScreen: React.FC<Props> = ({ route, navigation }) => {
       ) : (
         <View style={styles.submissionBox}>
           <Image
-            source={require('../../assets/image/success.png')} // Replace with your checkmark image
+            // Reverting to the local 'require' call as requested.
+            // Note: this may not render correctly in a web preview.
+            source={require('../../assets/image/success.png')}
             style={styles.successIcon}
           />
           <Text style={styles.successText}>Thank you, Submitted Successfully.</Text>
@@ -127,6 +177,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     zIndex: 10,
+    gap: 8,
   },
   profileImage: {
     width: 35,
@@ -137,8 +188,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 12,
     borderRadius: 10,
+    marginTop: 60,
     marginBottom: 40,
     elevation: 2,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    zIndex: 2,
+  },
+  headerInfo: {
+    // This view wraps the header text on the left
   },
   headerText: {
     fontSize: 14,
@@ -149,11 +208,40 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#4a4a4a',
   },
+  languageContainerStyle: {
+    width: 100,
+    zIndex: 1000,
+  },
+  languageDropdown: {
+    backgroundColor: '#f0f0f0',
+    height: 25,
+    paddingVertical: 2,
+    paddingHorizontal: 4,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  languageText: {
+    fontSize: 12,
+  },
+  selectedLanguageText: {
+    color: '#1f3bb3',
+  },
+  dropdownMenu: {
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  dropdownItem: {
+    fontSize: 12,
+  },
   summaryBox: {
     backgroundColor: '#e0ffd8',
     borderRadius: 10,
     padding: 16,
     marginBottom: 25,
+    zIndex: 1,
   },
   summaryTitle: {
     fontSize: 18,
@@ -161,16 +249,41 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 16,
   },
-  row: {
+  summaryGrid: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     flexWrap: 'wrap',
+    borderWidth: 1, // Add a border around the entire grid
+    borderColor: '#000', // Set the border color to black
+    backgroundColor: '#f0fff0',
+    borderRadius: 8,
+    overflow: 'hidden',
   },
-  cell: {
-    width: '30%',
-    marginVertical: 8,
-    textAlign: 'center',
+  summaryGridItem: {
+    width: '33.333%',
+    padding: 10,
+    justifyContent: 'center',
     alignItems: 'center',
+  },
+  summaryGridItemRightBorder: {
+    borderRightWidth: 1,
+    borderColor: '#000',
+  },
+  summaryGridItemBottomBorder: {
+    borderBottomWidth: 1,
+    borderColor: '#000',
+  },
+  summaryCellHeader: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#333',
+    marginBottom: 4,
+  },
+  summaryCellValue: {
+    fontSize: 14,
+    textAlign: 'center',
+    fontWeight: 'bold',
+    color: '#4a4a4a',
   },
   confirmText: {
     textAlign: 'center',
