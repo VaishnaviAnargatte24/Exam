@@ -1,8 +1,30 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../navigation/AppNavigator';
 
-// Sample answer key for demonstration
-const answerKey = {
+type ResultScreenProps = NativeStackScreenProps<RootStackParamList, 'Result'>;
+
+type AnswerKeyType = {
+  [key: string]: string;
+};
+
+type ResultItem = {
+  id: string;
+  number: number;
+  selected: string;
+  correct: string;
+  status: string;
+};
+
+// Sample answer key
+const answerKey: AnswerKeyType = {
   q1: 'A',
   q2: 'C',
   q3: 'B',
@@ -10,34 +32,36 @@ const answerKey = {
   q5: 'A',
 };
 
-const ResultScreen = ({ route, navigation }) => {
+const ResultScreen: React.FC<ResultScreenProps> = ({ route, navigation }) => {
   const { selectedOptions } = route.params;
 
   const calculateResults = () => {
     let correct = 0;
     let incorrect = 0;
 
-    const resultData = Object.keys(answerKey).map((questionId, index) => {
-      const correctAnswer = answerKey[questionId];
-      const selectedAnswer = selectedOptions[questionId] || null;
+    const resultData: ResultItem[] = Object.keys(answerKey).map(
+      (questionId, index) => {
+        const correctAnswer = answerKey[questionId];
+        const selectedAnswer = selectedOptions[questionId] || null;
 
-      const isCorrect = selectedAnswer === correctAnswer;
-      if (selectedAnswer) {
-        isCorrect ? correct++ : incorrect++;
+        const isCorrect = selectedAnswer === correctAnswer;
+        if (selectedAnswer) {
+          isCorrect ? correct++ : incorrect++;
+        }
+
+        return {
+          id: questionId,
+          number: index + 1,
+          selected: selectedAnswer || 'Not Answered',
+          correct: correctAnswer,
+          status: !selectedAnswer
+            ? 'Not Answered'
+            : isCorrect
+            ? 'Correct'
+            : 'Incorrect',
+        };
       }
-
-      return {
-        id: questionId,
-        number: index + 1,
-        selected: selectedAnswer || 'Not Answered',
-        correct: correctAnswer,
-        status: !selectedAnswer
-          ? 'Not Answered'
-          : isCorrect
-          ? 'Correct'
-          : 'Incorrect',
-      };
-    });
+    );
 
     return {
       correct,
@@ -60,6 +84,7 @@ const ResultScreen = ({ route, navigation }) => {
       </View>
 
       <Text style={styles.subTitle}>Answer Breakdown:</Text>
+
       <FlatList
         data={resultData}
         keyExtractor={(item) => item.id}

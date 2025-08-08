@@ -8,11 +8,11 @@ import {
   SafeAreaView,
   useWindowDimensions,
   Alert,
+  Image,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Picker } from '@react-native-picker/picker';
-import BellIcon from '../assets/bell.svg';
-import ProfileIcon from '../../assets/icons/candidate.png';
+import ProfileImage from '../../assets/image/candidate.jpg'; // ✅ JPG import
 
 type RootStackParamList = {
   Instructions: undefined;
@@ -38,14 +38,9 @@ const InstructionsScreen: React.FC<InstructionsScreenProps> = ({ navigation }) =
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* Top bar */}
+      {/* Top bar with only profile icon */}
       <View style={styles.topBar}>
-        <View style={{ flex: 1 }} />
-        <View style={styles.bellContainer}>
-          <View style={styles.notificationDot}><Text style={styles.notifCount}>2</Text></View>
-          <BellIcon width={24} height={24} />
-        </View>
-        <ProfileIcon width={36} height={36} style={styles.profileIcon} />
+        <Image source={ProfileImage} style={[{ width: 36, height: 36 }, styles.profileIcon]} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContainer}>
@@ -84,7 +79,7 @@ const InstructionsScreen: React.FC<InstructionsScreenProps> = ({ navigation }) =
           </View>
 
           <Text style={styles.instructionText}>
-            4. You can click on the ">" arrow which appears to the left of question palette to collapse the question palette thereby maximizing the question window.
+            4. You can click on the arrow which appears to the left of question palette to collapse the question palette thereby maximizing the question window.
           </Text>
           <Text style={styles.instructionText}>
             5. You can click on your "Profile" image on top right corner of your screen to change the language during the exam for entire question paper.
@@ -149,21 +144,11 @@ const styles = StyleSheet.create({
   scrollContainer: { padding: 10, alignItems: 'center' },
   topBar: {
     flexDirection: 'row',
+    justifyContent: 'flex-end',
     padding: 10,
     alignItems: 'center',
     backgroundColor: '#fff',
   },
-  bellContainer: { position: 'relative', marginRight: 10 },
-  notificationDot: {
-    backgroundColor: 'red',
-    position: 'absolute',
-    right: -6,
-    top: -6,
-    borderRadius: 8,
-    paddingHorizontal: 4,
-    zIndex: 1,
-  },
-  notifCount: { color: '#fff', fontSize: 10 },
   profileIcon: {
     borderRadius: 18,
     overflow: 'hidden',
