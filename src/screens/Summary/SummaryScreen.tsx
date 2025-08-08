@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -25,6 +25,8 @@ type Props = {
 const SummaryScreen: React.FC<Props> = ({ route, navigation }) => {
   const { selectedOptions, markedReview } = route.params;
 
+  const [submitted, setSubmitted] = useState(false);
+
   const totalQuestions = 45;
   const answered = Object.values(selectedOptions).filter(Boolean).length;
   const markedForReview = Object.values(markedReview).filter(Boolean).length;
@@ -37,9 +39,7 @@ const SummaryScreen: React.FC<Props> = ({ route, navigation }) => {
   const notVisited = totalQuestions - Object.keys(selectedOptions).length;
 
   const handleSubmit = () => {
-    navigation.navigate('Result', {
-      selectedOptions,
-    });
+    setSubmitted(true);
   };
 
   return (
@@ -60,35 +60,54 @@ const SummaryScreen: React.FC<Props> = ({ route, navigation }) => {
         <Text style={styles.timer}>Remaining Time - 02:55:23</Text>
       </View>
 
-      {/* Summary */}
-      <View style={styles.summaryBox}>
-        <Text style={styles.summaryTitle}>Exam Summary</Text>
+      {/* Conditional Rendering */}
+      {!submitted ? (
+        <>
+          {/* Summary */}
+          <View style={styles.summaryBox}>
+            <Text style={styles.summaryTitle}>Exam Summary</Text>
 
-        <View style={styles.row}>
-          <View style={styles.cell}><Text>No. of Questions{"\n"}{totalQuestions}</Text></View>
-          <View style={styles.cell}><Text>Answered{"\n"}{answered}</Text></View>
-          <View style={styles.cell}><Text>Not Answered{"\n"}{notAnswered}</Text></View>
-          <View style={styles.cell}><Text>Marked for Review{"\n"}{markedForReview}</Text></View>
-          <View style={styles.cell}><Text>Answered & Marked for Review{"\n"}{answeredAndMarked}</Text></View>
-          <View style={styles.cell}><Text>Not Visited{"\n"}{notVisited}</Text></View>
+            <View style={styles.row}>
+              <View style={styles.cell}><Text>No. of Questions{"\n"}{totalQuestions}</Text></View>
+              <View style={styles.cell}><Text>Answered{"\n"}{answered}</Text></View>
+              <View style={styles.cell}><Text>Not Answered{"\n"}{notAnswered}</Text></View>
+              <View style={styles.cell}><Text>Marked for Review{"\n"}{markedForReview}</Text></View>
+              <View style={styles.cell}><Text>Answered & Marked for Review{"\n"}{answeredAndMarked}</Text></View>
+              <View style={styles.cell}><Text>Not Visited{"\n"}{notVisited}</Text></View>
+            </View>
+          </View>
+
+          {/* Confirm Text */}
+          <Text style={styles.confirmText}>
+            Are you sure you want to submit for final marking?{"\n"}
+            No changes will be allowed after submission.
+          </Text>
+
+          {/* Buttons */}
+          <View style={styles.actionButtons}>
+            <TouchableOpacity style={styles.yesButton} onPress={handleSubmit}>
+              <Text style={styles.buttonText}>YES</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.noButton} onPress={() => navigation.goBack()}>
+              <Text style={styles.buttonText}>NO</Text>
+            </TouchableOpacity>
+          </View>
+        </>
+      ) : (
+        <View style={styles.submissionBox}>
+          <Image
+            source={require('../../assets/image/success.png')} // Replace with your checkmark image
+            style={styles.successIcon}
+          />
+          <Text style={styles.successText}>Thank you, Submitted Successfully.</Text>
+          <TouchableOpacity
+            style={styles.viewResultButton}
+            onPress={() => navigation.navigate('Result', { selectedOptions })}
+          >
+            <Text style={styles.viewResultText}>VIEW RESULT</Text>
+          </TouchableOpacity>
         </View>
-      </View>
-
-      {/* Confirm Text */}
-      <Text style={styles.confirmText}>
-        Are you sure you want to submit for final marking?{"\n"}
-        No changes will be allowed after submission.
-      </Text>
-
-      {/* Buttons */}
-      <View style={styles.actionButtons}>
-        <TouchableOpacity style={styles.yesButton} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>YES</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.noButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.buttonText}>NO</Text>
-        </TouchableOpacity>
-      </View>
+      )}
     </View>
   );
 };
@@ -114,7 +133,6 @@ const styles = StyleSheet.create({
     height: 35,
     borderRadius: 50,
   },
-
   headerBox: {
     backgroundColor: '#fff',
     padding: 12,
@@ -181,5 +199,37 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  submissionBox: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 3,
+  },
+  successIcon: {
+    width: 80,
+    height: 80,
+    marginBottom: 20,
+    resizeMode: 'contain',
+  },
+  successText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    color: '#333',
+    textAlign: 'center',
+  },
+  viewResultButton: {
+    backgroundColor: '#1f3bb3',
+    paddingVertical: 10,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+  },
+  viewResultText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 14,
   },
 });
