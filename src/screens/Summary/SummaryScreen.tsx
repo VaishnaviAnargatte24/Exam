@@ -7,10 +7,11 @@ import {
   Image,
 } from 'react-native';
 
-import DropDownPicker from 'react-native-dropdown-picker';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation/AppNavigator';
+import ProfileImage from '../../assets/image/candidate.jpg';
+import SuccessIcon from '../../assets/image/success.png';
 
 type SummaryScreenRouteProp = RouteProp<RootStackParamList, 'Summary'>;
 type SummaryScreenNavigationProp = StackNavigationProp<
@@ -28,22 +29,10 @@ const SummaryScreen: React.FC<Props> = ({ route, navigation }) => {
 
   const [submitted, setSubmitted] = useState(false);
   
-  // State for react-native-dropdown-picker
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState('English');
-  const [items, setItems] = useState([
-    {label: 'English', value: 'English'},
-    {label: 'Hindi', value: 'Hindi'},
-    {label: 'Marathi', value: 'Marathi'},
-    {label: 'Tamil', value: 'Tamil'}
-  ]);
-
   const totalQuestions = 45;
   // Calculate the counts based on the state data
   const answered = Object.values(selectedOptions).filter(Boolean).length;
-  const notAnswered = Object.keys(selectedOptions).filter(
-    (key) => !selectedOptions[key]
-  ).length;
+  const notAnswered = totalQuestions - answered;
   const markedForReview = Object.values(markedReview).filter(Boolean).length;
   const answeredAndMarked = Object.keys(selectedOptions).filter(
     (key) => selectedOptions[key] && markedReview[key]
@@ -68,21 +57,12 @@ const SummaryScreen: React.FC<Props> = ({ route, navigation }) => {
       {/* Top Header Section for Profile */}
       <View style={styles.topRightSection}>
         <Image
-          // Reverting to the local 'require' call as requested.
-          // Note: this may not render correctly in a web preview.
-          source={require('../../assets/image/candidate.jpg')}
+          source={ProfileImage}
           style={styles.profileImage}
         />
       </View>
-      {/* Profile Top Right */}
-<View style={styles.topRightSection}>
-  <Image
-    source={require('../../assets/image/candidate.jpg')}
-    style={styles.profileImage}
-  />
-</View>
 
-      {/* Main Header Section for Exam Details and Language */}
+      {/* Main Header Section for Exam Details */}
       <View style={styles.headerBox}>
         <View style={styles.headerInfo}>
           <Text style={styles.headerText}>Candidate Name - Shruti Rajput</Text>
@@ -90,23 +70,6 @@ const SummaryScreen: React.FC<Props> = ({ route, navigation }) => {
           <Text style={styles.headerText}>Subject Name - Physics</Text>
           <Text style={styles.timer}>Remaining Time - 02:55:23</Text>
         </View>
-        <DropDownPicker
-            open={open}
-            value={value}
-            items={items}
-            setOpen={setOpen}
-            setValue={setValue}
-            setItems={setItems}
-            style={styles.languageDropdown}
-            containerStyle={styles.languageContainerStyle}
-            dropDownContainerStyle={styles.dropdownMenu}
-            labelStyle={styles.languageText}
-            textStyle={styles.languageText}
-            selectedItemLabelStyle={styles.selectedLanguageText}
-            placeholder={value}
-            zIndex={1000}
-            listMode="SCROLLVIEW"
-        />
       </View>
 
       {/* Conditional Rendering */}
@@ -151,9 +114,7 @@ const SummaryScreen: React.FC<Props> = ({ route, navigation }) => {
       ) : (
         <View style={styles.submissionBox}>
           <Image
-            // Reverting to the local 'require' call as requested.
-            // Note: this may not render correctly in a web preview.
-            source={require('../../assets/image/success.png')}
+            source={SuccessIcon}
             style={styles.successIcon}
           />
           <Text style={styles.successText}>Thank you, Submitted Successfully.</Text>
@@ -209,40 +170,12 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 14,
     marginBottom: 4,
+    color: '#333',
   },
   timer: {
     fontSize: 14,
     fontWeight: 'bold',
     color: '#4a4a4a',
-  },
-  languageContainerStyle: {
-    width: 100,
-    zIndex: 1000,
-  },
-  languageDropdown: {
-    backgroundColor: '#f0f0f0',
-    height: 30, // Adjusted height
-    paddingVertical: 4, // Adjusted vertical padding
-    paddingHorizontal: 4,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ccc',
-  },
-  languageText: {
-    fontSize: 12, // Adjusted font size
-  },
-  selectedLanguageText: {
-    color: '#1f3bb3',
-  },
-  dropdownMenu: {
-    backgroundColor: '#fff',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    height: 200, // Adjusted height for dropdown menu
-  },
-  dropdownItem: {
-    fontSize: 13, // Adjusted font size
   },
   summaryBox: {
     backgroundColor: '#e0ffd8',
@@ -260,8 +193,8 @@ const styles = StyleSheet.create({
   summaryGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    borderWidth: 1, // Add a border around the entire grid
-    borderColor: '#000', // Set the border color to black
+    borderWidth: 1,
+    borderColor: '#000',
     backgroundColor: '#f0fff0',
     borderRadius: 8,
     overflow: 'hidden',
@@ -353,5 +286,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
   },
-  
 });
