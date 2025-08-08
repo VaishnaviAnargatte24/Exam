@@ -11,7 +11,6 @@ import {
   Image,
 } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Picker } from '@react-native-picker/picker';
 import ProfileImage from '../../assets/image/candidate.jpg'; // ✅ JPG import
 
 type RootStackParamList = {
@@ -23,7 +22,6 @@ type InstructionsScreenProps = NativeStackScreenProps<RootStackParamList, 'Instr
 
 const InstructionsScreen: React.FC<InstructionsScreenProps> = ({ navigation }) => {
   const [agreed, setAgreed] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState('English');
   const { width } = useWindowDimensions();
 
   const handleProceed = () => {
@@ -47,21 +45,9 @@ const InstructionsScreen: React.FC<InstructionsScreenProps> = ({ navigation }) =
         <View style={[styles.card, { width: cardWidth }]}>
           <View style={styles.headerRow}>
             <Text style={styles.cardTitle}>General Instructions</Text>
-            <View style={styles.languageContainer}>
-              <Text style={styles.languageLabel}>Choose Your Default Language</Text>
-              <Picker
-                selectedValue={selectedLanguage}
-                style={styles.picker}
-                onValueChange={(itemValue) => setSelectedLanguage(itemValue)}
-              >
-                <Picker.Item label="English" value="English" />
-                <Picker.Item label="Hindi" value="Hindi" />
-              </Picker>
-            </View>
           </View>
 
           <Text style={styles.subHeader}>Please read the instructions carefully</Text>
-          <Text style={styles.sectionTitle}>General Instructions:</Text>
           <Text style={styles.instructionText}>1. Total duration of NEET - PHYSICS is 180 min.</Text>
           <Text style={styles.instructionText}>
             2. The clock will be set at the server. The countdown timer in the top right corner of screen will display the remaining time available for you to complete the examination. When the timer reaches zero, the examination will end by itself. You will not be required to end or submit your examination.
@@ -161,23 +147,16 @@ const styles = StyleSheet.create({
   },
   headerRow: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
     alignItems: 'center',
     flexWrap: 'wrap',
     gap: 10,
   },
-  cardTitle: { fontSize: 18, 
-    fontWeight: 'bold', 
-    color: '#222' },
-  languageContainer: { 
-    alignItems: 'flex-end',
-    backgroundColor: '#f5f5f5', 
-    padding: 10,
-  borderRadius: 8,
-
-   },
-  languageLabel: { fontSize: 12, color: '#555', marginBottom: -5 },
-  picker: { height: 30, width: 150 },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#222',
+  },
   subHeader: {
     fontSize: 16,
     fontWeight: '600',
@@ -235,7 +214,6 @@ const styles = StyleSheet.create({
   },
   disabledButton: { backgroundColor: '#9e9e9e' },
   proceedButtonText: { color: '#fff', fontWeight: 'bold' },
-  
 });
 
 export default InstructionsScreen;
