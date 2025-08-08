@@ -214,15 +214,15 @@ const styles = StyleSheet.create({
   },
   languageDropdown: {
     backgroundColor: '#f0f0f0',
-    height: 25,
-    paddingVertical: 2,
+    height: 30, // Adjusted height
+    paddingVertical: 4, // Adjusted vertical padding
     paddingHorizontal: 4,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#ccc',
   },
   languageText: {
-    fontSize: 12,
+    fontSize: 12, // Adjusted font size
   },
   selectedLanguageText: {
     color: '#1f3bb3',
@@ -232,9 +232,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#ddd',
+    height: 200, // Adjusted height for dropdown menu
   },
   dropdownItem: {
-    fontSize: 12,
+    fontSize: 13, // Adjusted font size
   },
   summaryBox: {
     backgroundColor: '#e0ffd8',
