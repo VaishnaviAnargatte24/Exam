@@ -51,6 +51,13 @@ const SummaryScreen: React.FC<Props> = ({ route, navigation }) => {
           style={styles.profileImage}
         />
       </View>
+      {/* Profile Top Right */}
+<View style={styles.topRightSection}>
+  <Image
+    source={require('../../assets/image/candidate.jpg')}
+    style={styles.profileImage}
+  />
+</View>
 
       {/* Header */}
       <View style={styles.headerBox}>
@@ -232,4 +239,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
   },
+  
 });
