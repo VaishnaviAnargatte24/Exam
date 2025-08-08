@@ -44,7 +44,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const AppNavigator = () => {
   return (
     // Navigation container with header hidden for all screens
-    <Stack.Navigator initialRouteName="ExamSelection" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
       {/* Register all screens in the navigator */}
       <Stack.Screen name="ExamSelection" component={ExamSelectionScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />

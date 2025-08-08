@@ -29,7 +29,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
       Alert.alert('Error', 'Please enter both username and password');
       return;
     }
-    navigation.navigate('Instructions');
+    navigation.navigate('ExamSelection');
   };
 
   return (

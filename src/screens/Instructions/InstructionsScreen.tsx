@@ -161,11 +161,21 @@ const styles = StyleSheet.create({
   },
   headerRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     alignItems: 'center',
+    flexWrap: 'wrap',
+    gap: 10,
   },
-  cardTitle: { fontSize: 18, fontWeight: 'bold', color: '#222' },
-  languageContainer: { alignItems: 'flex-end' },
+  cardTitle: { fontSize: 18, 
+    fontWeight: 'bold', 
+    color: '#222' },
+  languageContainer: { 
+    alignItems: 'flex-end',
+    backgroundColor: '#f5f5f5', 
+    padding: 10,
+  borderRadius: 8,
+
+   },
   languageLabel: { fontSize: 12, color: '#555', marginBottom: -5 },
   picker: { height: 30, width: 150 },
   subHeader: {
@@ -225,7 +235,7 @@ const styles = StyleSheet.create({
   },
   disabledButton: { backgroundColor: '#9e9e9e' },
   proceedButtonText: { color: '#fff', fontWeight: 'bold' },
+  
 });
 
 export default InstructionsScreen;
-
