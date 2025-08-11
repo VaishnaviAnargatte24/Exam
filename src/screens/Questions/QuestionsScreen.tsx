@@ -33,7 +33,7 @@ const QuestionsScreen: React.FC<QuestionsScreenProps> = ({ navigation }) => {
   const [selectedOptions, setSelectedOptions] = useState<
     Record<number, string>
   >({});
-  const [markedReview, setMarkedReview] = useState<Record<number, boolean>>({});
+  const [markedReview, _setMarkedReview] = useState<Record<number, boolean>>({});
   const [statusMap, setStatusMap] = useState<Record<number, string>>({});
   const [timeLeft, setTimeLeft] = useState(3 * 60 * 60);
   const [questionTimer, setQuestionTimer] = useState(50);

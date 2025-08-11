@@ -9,10 +9,10 @@ import {
   Alert,
   StatusBar,
   Dimensions,
-  ScrollView,
 } from 'react-native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';  
 import { RootStackParamList } from '../../navigation/AppNavigator';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const { width } = Dimensions.get('window');
 
@@ -33,12 +33,16 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.scrollContainer}
+      enableOnAndroid
+      extraScrollHeight={20}
+      keyboardShouldPersistTaps="handled"
+    >
       <StatusBar barStyle="dark-content" backgroundColor="#f9f9f9" />
       <View style={styles.container}>
         {/* === Header Box === */}
         <View style={styles.topHeaderBox}>
-          {/* System Info */}
           <View style={styles.systemInfoContainer}>
             <Text style={styles.systemName}>
               System Name - <Text style={styles.systemCode}>[ C0001 ]</Text>
@@ -49,7 +53,6 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
             </Text>
           </View>
 
-          {/* Candidate Info (Below System Info on next line) */}
           <View style={styles.candidateContainer}>
             <Image
               source={require('../../assets/image/candidate.jpg')}
@@ -61,8 +64,8 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
                 Shruti Rajput
               </Text>
               <Text style={styles.profileText}>
-                <Text style={{ fontWeight: 'bold' }}>Subject - </Text>Practice
-                Paper 1
+                <Text style={{ fontWeight: 'bold' }}>Subject - </Text>
+                Practice Paper 1
               </Text>
             </View>
           </View>
@@ -80,7 +83,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
               placeholder="Enter username"
               placeholderTextColor="#000"
               value={username}
-              onChangeText={setUsername} 
+              onChangeText={setUsername}
             />
 
             <Text style={styles.inputLabel}>Password</Text>
@@ -108,7 +111,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
           </Text>
         </View>
       </View>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -124,8 +127,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: width * 0.03,
   },
-
-  // === TOP HEADER BOX ===
   topHeaderBox: {
     width: '100%',
     backgroundColor: '#fff',
@@ -174,8 +175,6 @@ const styles = StyleSheet.create({
     fontSize: width * 0.032,
     color: '#000',
   },
-
-  // === BLUE SECTION ===
   blueSection: {
     backgroundColor: '#2f4ea1',
     flex: 1,

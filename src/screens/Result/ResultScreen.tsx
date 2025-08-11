@@ -4,16 +4,18 @@ import {
   Text,
   StyleSheet,
   Image,
-  ScrollView,
   Dimensions,
   TouchableOpacity,
+  FlatList,
 } from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
 
 const ResultScreen = () => {
-  return (
-    <ScrollView contentContainerStyle={styles.container}>
+  const dummyData = [{ id: '1' }]; // Needed for FlatList
+
+  const renderContent = () => (
+    <View style={{ flex: 1 }}>
       {/* Profile Image at Top Right */}
       <View style={styles.topRightSection}>
         <Image
@@ -66,10 +68,14 @@ const ResultScreen = () => {
 
       {/* Score Card */}
       <View style={styles.scoreCard}>
-        <Text style={styles.scoreText}> Total Question: 45</Text>
-        <Text style={styles.scoreText}> Correct Answers: 25</Text>
-        <Text style={styles.scoreText}> Incorrect Answers: 10</Text>
-        <Text style={styles.scoreText}> Total Score: 70</Text>
+        <View style={styles.row}>
+          <Text style={styles.scoreText}>Total Questions: 45</Text>
+          <Text style={styles.scoreText}>Correct Answers: 25</Text>
+        </View>
+        <View style={styles.row}>
+          <Text style={styles.scoreText}>Incorrect Answers: 10</Text>
+          <Text style={styles.scoreText}>Total Score: 70</Text>
+        </View>
       </View>
 
       {/* Navigation Options */}
@@ -84,7 +90,16 @@ const ResultScreen = () => {
           <Text style={styles.link}>Answer Key</Text>
         </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
+  );
+
+  return (
+    <FlatList
+      data={dummyData}
+      keyExtractor={(item) => item.id}
+      renderItem={renderContent}
+      contentContainerStyle={styles.container}
+    />
   );
 };
 
@@ -94,7 +109,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     backgroundColor: '#fff',
-    paddingTop: 50, // padding to allow space for profile image
+    paddingTop: 50,
   },
   topRightSection: {
     position: 'absolute',
@@ -106,7 +121,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    padding :20,
+    padding: 20,
   },
   card: {
     backgroundColor: '#FFFFFF',
@@ -173,6 +188,11 @@ const styles = StyleSheet.create({
   scoreText: {
     fontSize: 15,
     marginVertical: 2,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 2,
   },
   linksRow: {
     borderTopWidth: 1,
