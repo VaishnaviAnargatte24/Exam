@@ -27,7 +27,7 @@ const App = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#fff', // Change if you want to match app theme
+    backgroundColor: '#fff', 
   },
   container: {
     flex: 1,
